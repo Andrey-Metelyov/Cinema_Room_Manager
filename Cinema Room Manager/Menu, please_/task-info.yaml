@@ -337,6 +337,113 @@ files:
         }
     }
   learner_created: false
+- name: src/cinema/CinemaModel.java
+  visible: true
+  text: |
+    package cinema;
+
+    public class CinemaModel {
+        private final String[][] seats;
+        private final int rows;
+        private final int seatsInRow;
+
+        public CinemaModel(int rows, int seatsInRow) {
+            this.rows = rows;
+            this.seatsInRow = seatsInRow;
+            seats = new String[rows][seatsInRow];
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < seatsInRow; j++) {
+                    seats[i][j] = "S";
+                }
+            }
+        }
+
+        public void setSeatState(int row, int seatNumber, String state) {
+            seats[row][seatNumber] = state;
+        }
+
+        public String getSeatState(int row, int seatNumber) {
+            return seats[row][seatNumber];
+        }
+
+        public int getRows() {
+            return rows;
+        }
+
+        public int getSeatsInRow() {
+            return seatsInRow;
+        }
+    }
+  learner_created: true
+- name: src/cinema/CinemaController.java
+  visible: true
+  text: |
+    package cinema;
+
+    import java.util.Scanner;
+
+    public class CinemaController {
+        CinemaModel cinemaModel;
+        Scanner scanner = new Scanner(System.in);
+
+        CinemaController() {
+            createCinemaModel();
+        }
+
+        private void createCinemaModel() {
+            System.out.println("Enter the number of rows:");
+            int rows = scanner.nextInt();
+            System.out.println("Enter the number of seats in each row:");
+            int seatsInRow = scanner.nextInt();
+            cinemaModel = new CinemaModel(rows, seatsInRow);
+        }
+
+        public void buyTicket() {
+            System.out.println("Enter a row number:");
+            int row = scanner.nextInt();
+            System.out.println("Enter a seat number in that row:");
+            int seat = scanner.nextInt();
+            if (cinemaModel.getSeatState(row - 1, seat - 1).equals("S")) {
+                cinemaModel.setSeatState(row - 1, seat - 1, "B");
+                int price = getPrice(row, seat);
+                System.out.println(System.lineSeparator() + "Ticket price: $" + price);
+                return;
+            }
+            System.out.println("invalid seat");
+        }
+
+        private int getPrice(int row, int seat) {
+            int rows = cinemaModel.getRows();
+            int seatsInRow = cinemaModel.getSeatsInRow();
+            int totalNumberOfSeats = rows * seatsInRow;
+            if (totalNumberOfSeats <= 60) {
+                return 10;
+            }
+            return (row <= (rows / 2)) ? 10 : 8;
+        }
+
+        public void showPlan() {
+            System.out.println(System.lineSeparator() + "Cinema:");
+            System.out.print(" ");
+            int rows = cinemaModel.getRows();
+            int seatsInRow = cinemaModel.getSeatsInRow();
+            for (int i = 0; i < seatsInRow; i++) {
+                System.out.print(" " + (i + 1));
+            }
+            System.out.print(System.lineSeparator());
+            for (int i = 0; i < rows; i++) {
+                System.out.print(i + 1);
+                for (int j = 0; j < seatsInRow; j++) {
+                    System.out.print(" " + cinemaModel.getSeatState(i, j));
+                }
+                System.out.print(System.lineSeparator());
+            }
+        }
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/133/stages/712/implement#comment
-status: Unchecked
-record: -1
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sun, 27 Dec 2020 06:41:54 UTC
+record: 4

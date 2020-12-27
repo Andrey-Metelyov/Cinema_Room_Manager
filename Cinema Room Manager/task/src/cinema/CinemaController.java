@@ -59,4 +59,25 @@ public class CinemaController {
             System.out.print(System.lineSeparator());
         }
     }
+
+    public void showMenu() {
+        while (true) {
+            System.out.println(System.lineSeparator() +
+                    "1. Show the seats\n" +
+                            "2. Buy a ticket\n" +
+                            "0. Exit");
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 0:
+                    return;
+                case 1:
+                    showPlan();
+                    break;
+                case 2:
+                    buyTicket();
+                default:
+                    continue;
+            }
+        }
+    }
 }
