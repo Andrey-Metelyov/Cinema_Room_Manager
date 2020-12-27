@@ -299,6 +299,15 @@ files:
         }
     }
   learner_created: false
+- name: src/cinema/CinemaController.java
+  visible: true
+  learner_created: true
+- name: src/cinema/CinemaModel.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/133/stages/711/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sun, 27 Dec 2020 06:35:35 UTC
 record: -1
