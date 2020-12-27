@@ -3,8 +3,10 @@ package cinema;
 import java.util.Scanner;
 
 public class CinemaController {
-    CinemaModel cinemaModel;
-    Scanner scanner = new Scanner(System.in);
+    private CinemaModel cinemaModel;
+    private Scanner scanner = new Scanner(System.in);
+    private int soldTickets = 0;
+    private int currentIncome = 0;
 
     CinemaController() {
         createCinemaModel();
@@ -19,17 +21,31 @@ public class CinemaController {
     }
 
     public void buyTicket() {
-        System.out.println("Enter a row number:");
-        int row = scanner.nextInt();
-        System.out.println("Enter a seat number in that row:");
-        int seat = scanner.nextInt();
-        if (cinemaModel.getSeatState(row - 1, seat - 1).equals("S")) {
-            cinemaModel.setSeatState(row - 1, seat - 1, "B");
-            int price = getPrice(row, seat);
-            System.out.println(System.lineSeparator() + "Ticket price: $" + price);
-            return;
+        while (true) {
+            System.out.println("Enter a row number:");
+            int row = scanner.nextInt();
+            if (row > cinemaModel.getRows()) {
+                System.out.println("Wrong input!");
+                return;
+            }
+            System.out.println("Enter a seat number in that row:");
+
+            int seat = scanner.nextInt();
+            if (seat > cinemaModel.getSeatsInRow()) {
+                System.out.println("Wrong input!");
+                return;
+            }
+            if (cinemaModel.getSeatState(row - 1, seat - 1).equals("S")) {
+                cinemaModel.setSeatState(row - 1, seat - 1, "B");
+                int price = getPrice(row, seat);
+                System.out.println(System.lineSeparator() + "Ticket price: $" + price);
+                soldTickets++;
+                currentIncome += price;
+                return;
+            } else {
+                System.out.println("That ticket has already been purchased!");
+            }
         }
-        System.out.println("invalid seat");
     }
 
     private int getPrice(int row, int seat) {
@@ -65,6 +81,7 @@ public class CinemaController {
             System.out.println(System.lineSeparator() +
                     "1. Show the seats\n" +
                             "2. Buy a ticket\n" +
+                            "3. Statistics\n" +
                             "0. Exit");
             int choice = scanner.nextInt();
             switch (choice) {
@@ -75,9 +92,38 @@ public class CinemaController {
                     break;
                 case 2:
                     buyTicket();
+                    break;
+                case 3:
+                    showStatistics();
+                    break;
                 default:
+                    System.out.println("Wrong input!");
                     continue;
             }
         }
+    }
+
+    private void showStatistics() {
+        int totalNumberOfSeats = cinemaModel.getRows() * cinemaModel.getSeatsInRow();
+        System.out.println("soldTickets=" + soldTickets);
+        System.out.println("totalNumberOfSeats=" + totalNumberOfSeats);
+        float percentage = 100.0f * soldTickets / totalNumberOfSeats;
+        System.out.println(percentage);
+        String strPercentage = String.format("%.2f", percentage);
+        System.out.println(strPercentage);
+        System.out.println("\n" +
+                "Number of purchased tickets: " + soldTickets + "\n" +
+                "Percentage: " + strPercentage + "%\n" +
+                "Current income: $" + currentIncome + "\n" +
+                "Total income: $" + getTotalIncome() + "");
+    }
+
+    private int getTotalIncome() {
+        int rows = cinemaModel.getRows();
+        int seatsInRow = cinemaModel.getSeatsInRow();
+        if (rows * seatsInRow <= 60) {
+            return 10 * rows * seatsInRow;
+        }
+        return rows / 2 * seatsInRow * 10 + (rows - rows / 2) * seatsInRow * 8;
     }
 }
